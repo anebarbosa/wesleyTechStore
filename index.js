@@ -70,7 +70,7 @@ function autenticador(email, password) {
 
 // Função para gerar um token baseado nas informações do usuário
 function gerarToken(user) {
-    const tokenBase = ${user.uid}-${user.email}-${Date.now()};
+    const tokenBase = `${user.uid}-${user.email}-${Date.now()}`;
     return crypto.createHash("sha256").update(tokenBase).digest("hex"); //Cria um hash SHA-256 com o token base
 }
 
@@ -104,7 +104,7 @@ app.post("/authenticated", (req, res) => {
             message: "Login realizado com sucesso!",
             authToken: authResult.authToken,
         });
-        //res.redirect(/home?token=${authResult.token});
+        //res.redirect(`/home?token=${authResult.token}`);
     } else {
         res.status(401).json({ message: "Usuário ou senha inválidos" });
     }
@@ -177,6 +177,6 @@ const server = app.listen(3000, "0.0.0.0", () => {
     const host = server.address().address;
     const port = server.address().port;
     console.log(
-        Aplicação WesleyTech Store está rodando no endereço IP ${host} e na porta ${port},
+        `Aplicação WesleyTech Store está rodando no endereço IP ${host} e na porta ${port}`,
     );
 });
