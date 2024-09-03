@@ -109,7 +109,7 @@ app.post("/authenticated", (req, res) => {
 
 // Rota protegida - Home
 app.get("/home", authMiddleware, (req, res) => {
-    res.render("home", {authToken: session.authToken, produtos, user: session.user});
+    res.render("home", { produtos, user: req.user, authToken: req.query.authToken });
 });
 
 // Produtos para exibição
@@ -161,7 +161,7 @@ const produtos = [
 
 // Rota protegida - Produtos
 app.get("/produtos", authMiddleware, (req, res) => {
-    res.render("produtos",{authToken: session.authToken, produtos});
+    res.render("produtos", { authToken: req.query.authToken, produtos });
 });
 
 // Rota protegida - Cadastro
