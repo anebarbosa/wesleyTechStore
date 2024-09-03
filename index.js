@@ -53,13 +53,15 @@ let session = {};
 
 // Função de autenticação
 function autenticador(email, password) {
-    for (let count = 0; count < users.length; count++) {
+    let count;
+    let token;
+
+    for (count = 0; count < users.length; count++) {
         if (
             users[count].email === email &&
             users[count].password === password
         ) {
-            const token = gerarToken(users[count]);
-            session[token] = { user: users[count], authToken: token };
+            token = gerarToken(users[count]);
             return { user: users[count], authToken: token };
         }
     }
@@ -68,16 +70,17 @@ function autenticador(email, password) {
 
 // Função para gerar um token baseado nas informações do usuário
 function gerarToken(user) {
-    const tokenBase = `${user.uid}-${user.email}-${Date.now()}`;
+    const tokenBase = ${user.uid}-${user.email}-${Date.now()};
     return crypto.createHash("sha256").update(tokenBase).digest("hex"); //Cria um hash SHA-256 com o token base
 }
 
 // Middleware de autenticação
 function authMiddleware(req, res, next) {
-    const { authToken } = req.query;
-
-    if (session[authToken]) {
-        req.user = session[authToken].user;
+    const {authToken } = req.query;
+    
+    if (session.authToken === authToken) {
+        req.user = session.user;
+        console.log(session.user);
         next();
     } else {
         console.log(session.user);
@@ -101,7 +104,7 @@ app.post("/authenticated", (req, res) => {
             message: "Login realizado com sucesso!",
             authToken: authResult.authToken,
         });
-        //res.redirect(`/home?token=${authResult.token}`);
+        //res.redirect(/home?token=${authResult.token});
     } else {
         res.status(401).json({ message: "Usuário ou senha inválidos" });
     }
@@ -109,7 +112,7 @@ app.post("/authenticated", (req, res) => {
 
 // Rota protegida - Home
 app.get("/home", authMiddleware, (req, res) => {
-    res.render("home", { produtos, user: req.user, authToken: req.query.authToken });
+    res.render("home", { produtos, user: session.user, authToken: session.authToken });
 });
 
 // Produtos para exibição
@@ -161,7 +164,7 @@ const produtos = [
 
 // Rota protegida - Produtos
 app.get("/produtos", authMiddleware, (req, res) => {
-    res.render("produtos", { authToken: req.query.authToken, produtos });
+    res.render("produtos",{authToken: session.authToken, produtos});
 });
 
 // Rota protegida - Cadastro
@@ -174,6 +177,6 @@ const server = app.listen(3000, "0.0.0.0", () => {
     const host = server.address().address;
     const port = server.address().port;
     console.log(
-        `Aplicação WesleyTech Store está rodando no endereço IP ${host} e na porta ${port}`,
+        Aplicação WesleyTech Store está rodando no endereço IP ${host} e na porta ${port},
     );
 });
