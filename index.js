@@ -53,15 +53,13 @@ let session = {};
 
 // Função de autenticação
 function autenticador(email, password) {
-    let count;
-    let token;
-
-    for (count = 0; count < users.length; count++) {
+    for (let count = 0; count < users.length; count++) {
         if (
             users[count].email === email &&
             users[count].password === password
         ) {
-            token = gerarToken(users[count]);
+            const token = gerarToken(users[count]);
+            session[token] = { user: users[count], authToken: token };
             return { user: users[count], authToken: token };
         }
     }
@@ -76,11 +74,10 @@ function gerarToken(user) {
 
 // Middleware de autenticação
 function authMiddleware(req, res, next) {
-    const {authToken } = req.query;
-    
-    if (session.authToken === authToken) {
-        req.user = session.user;
-        console.log(session.user);
+    const { authToken } = req.query;
+
+    if (session[authToken]) {
+        req.user = session[authToken].user;
         next();
     } else {
         console.log(session.user);
