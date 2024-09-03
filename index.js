@@ -112,7 +112,7 @@ app.post("/authenticated", (req, res) => {
 
 // Rota protegida - Home
 app.get("/home", authMiddleware, (req, res) => {
-    res.render("home", { produtos, user: session.user, authToken: session.authToken });
+    res.render("home", {authToken: session.authToken, produtos, user: session.user});
 });
 
 // Produtos para exibição
